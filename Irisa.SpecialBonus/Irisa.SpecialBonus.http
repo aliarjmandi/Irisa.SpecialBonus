@@ -1,0 +1,6 @@
+@Irisa.SpecialBonus_HostAddress = http://localhost:5120
+
+GET {{Irisa.SpecialBonus_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
