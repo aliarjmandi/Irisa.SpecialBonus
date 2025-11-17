@@ -3,27 +3,29 @@ using Irisa.SpecialBonus.Persistence.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Controllers
 builder.Services.AddControllers();
 
-// Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Identity (EF فقط برای امنیت)
+// Identity + JWT
 builder.Services.AddApplicationIdentity(builder.Configuration);
-
-// JWT Authentication (بر اساس تنظیماتی که قبلاً ساختیم)
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
+// Swagger با JWT
+builder.Services.AddSwaggerWithJwt();
+
 var app = builder.Build();
+
+// اجرای Seeder
 await IdentitySeeder.SeedAsync(app.Services);
 
-// Configure the HTTP request pipeline.
+// HTTP pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Irisa Special Bonus API v1");
+    });
 }
 
 app.UseHttpsRedirection();
