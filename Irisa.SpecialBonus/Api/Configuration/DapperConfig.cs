@@ -15,6 +15,7 @@ namespace Irisa.SpecialBonus.Api.Configuration
             services.AddScoped<IIndicatorValueService, IndicatorValueService>();
             services.AddScoped<IManagerialCoefficientService, ManagerialCoefficientService>();
             services.AddScoped<IGroupRewardResultService, GroupRewardResultService>();
+            services.AddScoped<IPeriodGroupSnapshotService, PeriodGroupSnapshotService>();
 
             return services;
         }

@@ -1,4 +1,5 @@
 ﻿using Irisa.SpecialBonus.Api.Configuration;
+using Irisa.SpecialBonus.Application.Services;
 using Irisa.SpecialBonus.Domain.Interfaces.Services;
 using Irisa.SpecialBonus.Persistence.Dapper.Services;
 using Irisa.SpecialBonus.Persistence.Identity;
@@ -12,6 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddApplicationIdentity(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddDapperServices();
+
+builder.Services.AddScoped<IRewardCalculationService, RewardCalculationService>();
 
 // Swagger با JWT
 builder.Services.AddSwaggerWithJwt();
