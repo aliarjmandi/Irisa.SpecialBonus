@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\Controllers\Admin\" />
     <Folder Include="Api\Filters\" />
     <Folder Include="Api\Mapping\" />
     <Folder Include="Api\Middleware\" />
