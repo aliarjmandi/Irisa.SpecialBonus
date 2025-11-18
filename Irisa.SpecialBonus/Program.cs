@@ -1,4 +1,6 @@
 ﻿using Irisa.SpecialBonus.Api.Configuration;
+using Irisa.SpecialBonus.Domain.Interfaces.Services;
+using Irisa.SpecialBonus.Persistence.Dapper.Services;
 using Irisa.SpecialBonus.Persistence.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,7 @@ builder.Services.AddControllers();
 // Identity + JWT
 builder.Services.AddApplicationIdentity(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddDapperServices();
 
 // Swagger با JWT
 builder.Services.AddSwaggerWithJwt();
