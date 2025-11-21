@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>شاخص‌ها | سامانه پاداش ویژه</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/styles.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-primary px-3">
+    <span class="navbar-brand mb-0 h1">مدیریت شاخص‌ها</span>
+    <button class="btn btn-sm btn-outline-light" onclick="window.location.href='dashboard.html'">بازگشت</button>
+</nav>
+
+<div class="container mt-4">
+
+    <h5>لیست شاخص‌های معاونت</h5>
+
+    <table class="table table-bordered table-sm mt-3" id="tblIndicators">
+        <thead>
+        <tr>
+            <th>کد</th>
+            <th>عنوان شاخص</th>
+            <th>وزن (درصد اثر)</th>
+            <th>کاربر واردکننده</th>
+            <th>فعال؟</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+<script>
+    $(function () {
+        if (!requireAuth()) return;
+
+        apiRequest("GET", "/admin/Indicators", null, function (res) {
+            let rows = "";
+            res.forEach(i => {
+                rows += `
+                <tr>
+                    <td>${i.code}</td>
+                    <td>${i.name}</td>
+                    <td>${i.weight}</td>
+                    <td>${i.dataEntryUserDisplayName || i.dataEntryUserId || "-"}</td>
+                    <td>${i.isActive ? "بله" : "خیر"}</td>
+                </tr>`;
+            });
+            $("#tblIndicators tbody").html(rows);
+        });
+    });
+</script>
+
+</body>
+</html>

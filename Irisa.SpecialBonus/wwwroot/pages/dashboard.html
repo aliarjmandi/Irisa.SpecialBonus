@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>داشبورد | سامانه پاداش ویژه</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/styles.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark bg-primary px-3">
+    <span class="navbar-brand mb-0 h1">سامانه پاداش ویژه</span>
+    <div class="d-flex align-items-center">
+        <span class="text-white me-3">کاربر: <span id="user"></span></span>
+        <button class="btn btn-sm btn-outline-light" onclick="logout()">خروج</button>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <h5 class="mb-3">منوی اصلی</h5>
+
+    <ul class="list-group">
+        <li class="list-group-item"><a href="reward-periods.html">مدیریت دوره‌های پاداش</a></li>
+        <li class="list-group-item"><a href="indicators.html">مدیریت شاخص‌ها</a></li>
+        <li class="list-group-item"><a href="indicator-values.html">ورود / مشاهده مقادیر شاخص‌ها</a></li>
+        <li class="list-group-item"><a href="reward-calculation.html">محاسبه و مشاهده پاداش ویژه</a></li>
+        <li class="list-group-item"><a href="groups.html">گروه‌های تخصصی</a></li>
+    </ul>
+
+</div>
+
+<script>
+    $(function () {
+        if (!requireAuth()) return;
+        fillUserInfo();
+    });
+</script>
+
+</body>
+</html>

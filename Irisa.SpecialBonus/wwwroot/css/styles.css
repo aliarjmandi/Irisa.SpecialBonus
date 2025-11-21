@@ -1,0 +1,31 @@
+/* جهت کلی سایت و فونت پایه */
+html[dir="rtl"], body {
+    direction: rtl;
+    text-align: right;
+    font-family: tahoma, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* فاصله عمومی صفحات */
+body {
+    background-color: #f8f9fa;
+}
+
+/* کارت‌های لاگین و فرم‌ها */
+.card {
+    border-radius: 0.75rem;
+}
+
+/* لینک‌های منو */
+.list-group-item a {
+    text-decoration: none;
+    color: #0d6efd;
+}
+
+.list-group-item a:hover {
+    text-decoration: underline;
+}
+
+/* جدول‌ها */
+table thead {
+    background-color: #e9ecef;
+}

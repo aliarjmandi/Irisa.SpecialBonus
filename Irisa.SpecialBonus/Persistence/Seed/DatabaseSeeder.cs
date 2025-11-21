@@ -64,7 +64,12 @@ namespace Irisa.SpecialBonus.Persistence.Seed
             {
                 if (!await _roleManager.RoleExistsAsync(roleName))
                 {
-                    var result = await _roleManager.CreateAsync(new ApplicationRole { Name = roleName, NormalizedName = roleName.ToUpperInvariant() });
+                    var result = await _roleManager.CreateAsync(new ApplicationRole
+                    {
+                        Name = roleName,
+                        NormalizedName = roleName.ToUpperInvariant()
+                    });
+
                     if (!result.Succeeded)
                     {
                         var errors = string.Join(" | ", result.Errors.Select(e => e.Description));
@@ -113,6 +118,7 @@ namespace Irisa.SpecialBonus.Persistence.Seed
                     EmailConfirmed = true
                 };
 
+                // پسورد تستی مشترک
                 var createResult = await _userManager.CreateAsync(user, "Test@12345");
                 if (!createResult.Succeeded)
                 {
@@ -140,7 +146,7 @@ namespace Irisa.SpecialBonus.Persistence.Seed
 
         private async Task SeedDomainDataAsync()
         {
-            // ترتیب: Deputy → Groups → Period → Indicators → Snapshots → Managerial Coeff → IndicatorValues
+            // ترتیب: Deputy → Groups → Period → Indicators → Snapshots → ManagerialCoeff → IndicatorValues
             var deputyId = await EnsureDeputyAsync();
             var groupIds = await EnsureGroupsAsync(deputyId);
             var periodId = await EnsureRewardPeriodAsync(deputyId);
@@ -321,6 +327,7 @@ VALUES
     @CreatedById
 );";
 
+                // توجه: MinValue/MaxValue و Valueها نرمال‌شده بین 0 و 1 هستند
                 await conn.ExecuteAsync(insertSql, new
                 {
                     Id = id,
@@ -329,8 +336,8 @@ VALUES
                     Name = name,
                     Description = name,
                     Weight = weight,
-                    MinValue = 0m,
-                    MaxValue = 100m,
+                    MinValue = 0m,   // ✅ بازه 0 تا 1 تا با decimal(5,4) سازگار شود
+                    MaxValue = 1m,   // ✅
                     DataEntryUserId = dataEntryUserId,
                     IsActive = true,
                     SortOrder = sortOrder,
@@ -424,6 +431,7 @@ VALUES
                 });
             }
 
+            // ضرایب مدیریتی نمونه (۱ یعنی بدون تغییر)
             await EnsureCoeff("ACCT", 1.05m);
             await EnsureCoeff("PROD", 1.10m);
             await EnsureCoeff("COMM", 0.95m);
@@ -469,36 +477,37 @@ VALUES
                     PeriodId = periodId,
                     GroupId = groupId,
                     IndicatorId = indicatorId,
-                    Value = value,
+                    Value = value,          // مقدار نرمال‌شده بین 0 و 1
                     EnteredById = _admin.Id,
                     EnteredAt = DateTime.UtcNow,
                     ModifiedAt = (DateTime?)null
                 });
             }
 
+            // مقادیر نرمال‌شده: 80% => 0.80m
             // Accounting
-            await EnsureValue("ACCT", "PART", 80);
-            await EnsureValue("ACCT", "SUPP", 75);
-            await EnsureValue("ACCT", "DEV", 70);
-            await EnsureValue("ACCT", "APEX", 60);
+            await EnsureValue("ACCT", "PART", 0.80m);
+            await EnsureValue("ACCT", "SUPP", 0.75m);
+            await EnsureValue("ACCT", "DEV", 0.70m);
+            await EnsureValue("ACCT", "APEX", 0.60m);
 
             // Production
-            await EnsureValue("PROD", "PART", 90);
-            await EnsureValue("PROD", "SUPP", 85);
-            await EnsureValue("PROD", "DEV", 88);
-            await EnsureValue("PROD", "APEX", 70);
+            await EnsureValue("PROD", "PART", 0.90m);
+            await EnsureValue("PROD", "SUPP", 0.85m);
+            await EnsureValue("PROD", "DEV", 0.88m);
+            await EnsureValue("PROD", "APEX", 0.70m);
 
             // Commerce
-            await EnsureValue("COMM", "PART", 75);
-            await EnsureValue("COMM", "SUPP", 65);
-            await EnsureValue("COMM", "DEV", 60);
-            await EnsureValue("COMM", "APEX", 55);
+            await EnsureValue("COMM", "PART", 0.75m);
+            await EnsureValue("COMM", "SUPP", 0.65m);
+            await EnsureValue("COMM", "DEV", 0.60m);
+            await EnsureValue("COMM", "APEX", 0.55m);
 
             // IT
-            await EnsureValue("IT", "PART", 85);
-            await EnsureValue("IT", "SUPP", 90);
-            await EnsureValue("IT", "DEV", 92);
-            await EnsureValue("IT", "APEX", 80);
+            await EnsureValue("IT", "PART", 0.85m);
+            await EnsureValue("IT", "SUPP", 0.90m);
+            await EnsureValue("IT", "DEV", 0.92m);
+            await EnsureValue("IT", "APEX", 0.80m);
         }
 
         #endregion

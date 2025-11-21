@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>مقادیر شاخص‌ها | سامانه پاداش ویژه</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/styles.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-primary px-3">
+    <span class="navbar-brand mb-0 h1">ورود / مشاهده مقادیر شاخص‌ها</span>
+    <button class="btn btn-sm btn-outline-light" onclick="window.location.href='dashboard.html'">بازگشت</button>
+</nav>
+
+<div class="container mt-4">
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="form-label">دوره</label>
+            <select id="ddlPeriod" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">گروه تخصصی</label>
+            <select id="ddlGroup" class="form-select"></select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button id="btnLoad" class="btn btn-primary w-100">نمایش مقادیر</button>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-sm mt-3" id="tblValues">
+        <thead>
+        <tr>
+            <th>کد شاخص</th>
+            <th>عنوان شاخص</th>
+            <th>وزن</th>
+            <th>مقدار (نمره)</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+<script>
+    $(function () {
+        if (!requireAuth()) return;
+
+        // بارگذاری دوره‌ها
+        apiRequest("GET", "/admin/RewardPeriods", null, function (res) {
+            let opts = "";
+            res.forEach(p => {
+                opts += `<option value="${p.id}">${p.title} (${p.year}/${p.month})</option>`;
+            });
+            $("#ddlPeriod").html(opts);
+        });
+
+        // بارگذاری گروه‌ها
+        apiRequest("GET", "/admin/SpecialtyGroups", null, function (res) {
+            let opts = "";
+            res.forEach(g => {
+                opts += `<option value="${g.id}">${g.name}</option>`;
+            });
+            $("#ddlGroup").html(opts);
+        });
+
+        $("#btnLoad").on("click", function () {
+            const periodId = $("#ddlPeriod").val();
+            const groupId = $("#ddlGroup").val();
+
+            if (!periodId || !groupId) {
+                alert("لطفاً دوره و گروه را انتخاب کنید.");
+                return;
+            }
+
+            // این URL را با Route واقعی کنترلر IndicatorValues هماهنگ می‌کنیم
+            apiRequest("GET",
+                `/dataentry/IndicatorValues?periodId=${periodId}&groupId=${groupId}`,
+                null,
+                function (res) {
+                    let rows = "";
+                    res.forEach(v => {
+                        rows += `
+                        <tr>
+                            <td>${v.indicatorCode || ""}</td>
+                            <td>${v.indicatorName || ""}</td>
+                            <td>${v.weight || ""}</td>
+                            <td>${v.value}</td>
+                        </tr>`;
+                    });
+                    $("#tblValues tbody").html(rows);
+                });
+        });
+    });
+</script>
+
+</body>
+</html>

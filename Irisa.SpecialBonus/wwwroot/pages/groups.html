@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>گروه‌های تخصصی | سامانه پاداش ویژه</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/styles.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-primary px-3">
+    <span class="navbar-brand mb-0 h1">گروه‌های تخصصی</span>
+    <button class="btn btn-sm btn-outline-light" onclick="window.location.href='dashboard.html'">بازگشت</button>
+</nav>
+
+<div class="container mt-4">
+
+    <h5>لیست گروه‌ها</h5>
+
+    <table class="table table-bordered table-sm mt-3" id="tblGroups">
+        <thead>
+        <tr>
+            <th>کد ERP</th>
+            <th>نام گروه</th>
+            <th>مدیر گروه</th>
+            <th>فعال؟</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+<script>
+    $(function () {
+        if (!requireAuth()) return;
+
+        apiRequest("GET", "/admin/SpecialtyGroups", null, function (res) {
+            let rows = "";
+            res.forEach(g => {
+                rows += `
+                <tr>
+                    <td>${g.erpGroupCode}</td>
+                    <td>${g.name}</td>
+                    <td>${g.managerDisplayName || g.managerUserId || "-"}</td>
+                    <td>${g.isActive ? "بله" : "خیر"}</td>
+                </tr>`;
+            });
+            $("#tblGroups tbody").html(rows);
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,442 @@
+{
+  "info": {
+    "_postman_id": "c6a3c5b2-9b63-4c05-8e2b-111111111111",
+    "name": "Irisa.SpecialBonus.Api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (get JWT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"admin\",\n  \"password\": \"Test@12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// فرض می‌کنیم پاسخ شبیه { token: \"...\" } باشد",
+                  "if (pm.response.code === 200) {",
+                  "  var json = pm.response.json();",
+                  "  if (json && json.token) {",
+                  "    pm.environment.set(\"token\", json.token);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin - RewardPeriods",
+      "item": [
+        {
+          "name": "Get All RewardPeriods",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/RewardPeriods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "RewardPeriods"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get RewardPeriod by Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/RewardPeriods/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "RewardPeriods",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create RewardPeriod",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deputyId\": \"{{deputyId}}\",\n  \"year\": 1404,\n  \"month\": 6,\n  \"title\": \"شهریور 1404 تست\",\n  \"budgetAmount\": 1000000000,\n  \"isLocked\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/RewardPeriods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "RewardPeriods"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update RewardPeriod",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{periodId}}\",\n  \"deputyId\": \"{{deputyId}}\",\n  \"year\": 1404,\n  \"month\": 6,\n  \"title\": \"شهریور 1404 - ویرایش شده\",\n  \"budgetAmount\": 1000000000,\n  \"isLocked\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/RewardPeriods/{{periodId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "RewardPeriods",
+                "{{periodId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete RewardPeriod",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/RewardPeriods/{{periodId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "RewardPeriods",
+                "{{periodId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lock RewardPeriod",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/RewardPeriods/{{periodId}}/lock",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "RewardPeriods",
+                "{{periodId}}",
+                "lock"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+
+    {
+      "name": "Admin - Deputies",
+      "item": [
+        {
+          "name": "Get All Deputies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/Deputies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "Deputies"
+              ]
+            }
+          },
+          "response": []
+        }
+        // بقیه CRUD برای Deputies را می‌توانی مشابه RewardPeriods اضافه/کپی کنی
+      ]
+    },
+
+    {
+      "name": "Admin - SpecialtyGroups",
+      "item": [
+        {
+          "name": "Get All Groups",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/SpecialtyGroups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "SpecialtyGroups"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+
+    {
+      "name": "Admin - Indicators",
+      "item": [
+        {
+          "name": "Get All Indicators",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/Indicators",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "Indicators"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+
+    {
+      "name": "Deputy - ManagerialCoefficients",
+      "item": [
+        {
+          "name": "Get Coefficients By Period",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/deputy/ManagerialCoefficients/period/{{periodId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "deputy",
+                "ManagerialCoefficients",
+                "period",
+                "{{periodId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+
+    {
+      "name": "DataEntry - IndicatorValues",
+      "item": [
+        {
+          "name": "Get Values By Period & Group",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dataentry/IndicatorValues?periodId={{periodId}}&groupId={{groupId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dataentry",
+                "IndicatorValues"
+              ],
+              "query": [
+                {
+                  "key": "periodId",
+                  "value": "{{periodId}}"
+                },
+                {
+                  "key": "groupId",
+                  "value": "{{groupId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+
+    {
+      "name": "GroupManager - GroupRewards",
+      "item": [
+        {
+          "name": "Get Reward Results for My Group",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/groupmanager/GroupRewards/period/{{periodId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "groupmanager",
+                "GroupRewards",
+                "period",
+                "{{periodId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "{{baseUrl}}"
+    }
+  ]
+}

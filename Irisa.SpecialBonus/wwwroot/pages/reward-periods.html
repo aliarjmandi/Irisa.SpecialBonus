@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>دوره‌های پاداش | سامانه پاداش ویژه</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/styles.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-primary px-3">
+    <span class="navbar-brand mb-0 h1">دوره‌های پاداش</span>
+    <button class="btn btn-sm btn-outline-light" onclick="window.location.href='dashboard.html'">بازگشت به داشبورد</button>
+</nav>
+
+<div class="container mt-4">
+
+    <h5>لیست دوره‌ها</h5>
+
+    <table class="table table-bordered table-sm mt-3" id="tblPeriods">
+        <thead>
+        <tr>
+            <th>عنوان</th>
+            <th>سال</th>
+            <th>ماه</th>
+            <th>بودجه (ریال)</th>
+            <th>قفل شده؟</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+<script>
+    $(function () {
+        if (!requireAuth()) return;
+
+        apiRequest("GET", "/admin/RewardPeriods", null, function (res) {
+            let rows = "";
+            res.forEach(p => {
+                rows += `
+                <tr>
+                    <td>${p.title}</td>
+                    <td>${p.year}</td>
+                    <td>${p.month}</td>
+                    <td>${p.budgetAmount}</td>
+                    <td>${p.isLocked ? "بله" : "خیر"}</td>
+                </tr>`;
+            });
+            $("#tblPeriods tbody").html(rows);
+        });
+    });
+</script>
+
+</body>
+</html>
