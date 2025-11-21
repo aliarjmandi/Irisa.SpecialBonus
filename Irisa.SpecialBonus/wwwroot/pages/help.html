@@ -1,0 +1,867 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <title>راهنمای فنی سامانه پاداش ویژه (Irisa.SpecialBonus)</title>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f7fb;
+            color: #222;
+        }
+
+        header {
+            background: #005bff;
+            color: #fff;
+            padding: 12px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+            header h1 {
+                margin: 0;
+                font-size: 18px;
+            }
+
+            header small {
+                font-size: 12px;
+                opacity: 0.9;
+            }
+
+        #container {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+        nav {
+            width: 260px;
+            background: #ffffff;
+            border-left: 1px solid #d0d7e2;
+            min-height: calc(100vh - 52px);
+            position: sticky;
+            top: 52px;
+        }
+
+            nav h2 {
+                font-size: 14px;
+                margin: 16px 16px 8px;
+                border-bottom: 1px solid #e0e4ee;
+                padding-bottom: 4px;
+            }
+
+            nav ul {
+                list-style: none;
+                padding: 0 16px 16px;
+                margin: 0;
+            }
+
+            nav li {
+                margin: 4px 0;
+            }
+
+            nav a {
+                text-decoration: none;
+                color: #0050c8;
+                font-size: 13px;
+            }
+
+                nav a:hover {
+                    text-decoration: underline;
+                }
+
+        main {
+            flex: 1;
+            padding: 24px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 16px;
+            margin-top: 32px;
+        }
+
+        h4 {
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+
+        .badge-db {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .badge-api {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 6px;
+            border: 1px solid #d0d7e2;
+            padding: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 12px;
+            direction: ltr;
+        }
+
+            table thead {
+                background: #eef1f8;
+            }
+
+            table th,
+            table td {
+                border: 1px solid #d0d7e2;
+                padding: 4px 6px;
+                text-align: left;
+            }
+
+            table th {
+                font-weight: bold;
+            }
+
+        code {
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            background: #f1f3f8;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        pre {
+            background: #111827;
+            color: #f9fafb;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .method {
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #fff;
+        }
+
+        .method-get {
+            background: #15803d;
+        }
+
+        .method-post {
+            background: #2563eb;
+        }
+
+        .method-put {
+            background: #d97706;
+        }
+
+        .method-delete {
+            background: #b91c1c;
+        }
+
+        .role-pill {
+            display: inline-block;
+            background: #e0f2fe;
+            border-radius: 999px;
+            padding: 2px 8px;
+            font-size: 11px;
+            color: #075985;
+            margin-left: 4px;
+        }
+
+        .anchor-block {
+            height: 1px;
+            margin-top: -60px;
+            visibility: hidden;
+        }
+
+        @media print {
+            header, nav {
+                position: static;
+            }
+
+            #container {
+                display: block;
+            }
+
+            nav {
+                width: auto;
+                border: none;
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>راهنمای فنی سامانه پاداش ویژه <small>(Irisa.SpecialBonus)</small></h1>
+    </header>
+
+    <div id="container">
+        <nav>
+            <h2>فهرست</h2>
+            <ul>
+                <li><a href="#overview">۱. معرفی کلی</a></li>
+                <li><a href="#db-tables">۲. ساختار پایگاه داده</a></li>
+                <li>
+                    <strong>جداول دامنه</strong>
+                    <ul>
+                        <li><a href="#tbl-deputies">Deputies</a></li>
+                        <li><a href="#tbl-specialty-groups">SpecialtyGroups</a></li>
+                        <li><a href="#tbl-reward-periods">RewardPeriods</a></li>
+                        <li><a href="#tbl-indicators">Indicators</a></li>
+                        <li><a href="#tbl-indicator-values">IndicatorValues</a></li>
+                        <li><a href="#tbl-managerial-coeffs">ManagerialCoefficients</a></li>
+                        <li><a href="#tbl-period-snapshots">PeriodGroupSnapshots</a></li>
+                        <li><a href="#tbl-group-results">GroupRewardResults</a></li>
+                        <li><a href="#tbl-audit-logs">AuditLogs</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>جداول Identity</strong>
+                    <ul>
+                        <li><a href="#tbl-aspnet-users">AspNetUsers</a></li>
+                        <li><a href="#tbl-aspnet-roles">AspNetRoles</a></li>
+                        <li><a href="#tbl-aspnet-userroles">AspNetUserRoles</a></li>
+                    </ul>
+                </li>
+                <li><a href="#apis">۳. وب‌سرویس‌ها (API)</a></li>
+                <li>
+                    <strong>Auth</strong>
+                    <ul>
+                        <li><a href="#api-auth-login">POST /api/Auth/login</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Admin APIs</strong>
+                    <ul>
+                        <li><a href="#api-deputies">Deputies</a></li>
+                        <li><a href="#api-reward-periods">RewardPeriods</a></li>
+                        <!-- در صورت نیاز می‌توان کنترلرهای دیگر را بعداً اضافه کرد -->
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- ====================== معرفی کلی ====================== -->
+            <div id="overview" class="anchor-block"></div>
+            <section class="card">
+                <h2>۱. معرفی کلی سامانه</h2>
+                <p>
+                    سامانه <strong>Irisa.SpecialBonus</strong> برای محاسبه و توزیع «پاداش ویژه» معاونت سیستم‌های اطلاعاتی طراحی شده است.
+                    منطق اصلی شامل ثبت دوره‌های پاداش، تعریف معاونت و گروه‌های تخصصی، شاخص‌های ارزیابی، ضرایب فنی و مدیریتی و نهایتاً محاسبه پاداش
+                    ویژه و پاداش ماده ۴۷ برای مدیران گروه‌ها است.
+                </p>
+                <p>
+                    لایه API با <code>ASP.NET Core 9</code> پیاده شده و برای داده‌ها (به جز Identity) از
+                    <code>Dapper</code> و برای کاربران و نقش‌ها از <code>ASP.NET Core Identity + EF Core</code> استفاده می‌شود.
+                    احراز هویت سرویس‌ها مبتنی بر <code>JWT Bearer Token</code> است.
+                </p>
+            </section>
+
+            <!-- ====================== جداول دیتابیس ====================== -->
+            <div id="db-tables" class="anchor-block"></div>
+            <section class="card">
+                <h2>۲. ساختار پایگاه داده <span class="badge badge-db">Database Schema</span></h2>
+                <p>در این بخش خلاصه ساختار جداول اصلی سامانه آورده شده است.</p>
+            </section>
+
+            <!-- Deputies -->
+            <div id="tbl-deputies" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۱. جدول <code>Deputies</code></h3>
+                <p>
+                    نگهداری اطلاعات هر معاونت (مثلاً معاونت سیستم‌های اطلاعاتی). این جدول سطح بالای سازمانی برای تجمیع دوره‌ها و گروه‌ها است.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه یکتا برای معاونت</td></tr>
+                        <tr><td>Code</td><td>nvarchar(20)</td><td>No</td><td>کد معاونت (مثلاً <code>ISD</code>)</td></tr>
+                        <tr><td>Name</td><td>nvarchar(200)</td><td>No</td><td>نام معاونت</td></tr>
+                        <tr><td>IsActive</td><td>bit</td><td>No</td><td>فعال / غیرفعال</td></tr>
+                        <tr><td>CreatedAt</td><td>datetime2</td><td>No</td><td>تاریخ ایجاد رکورد</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- SpecialtyGroups -->
+            <div id="tbl-specialty-groups" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۲. جدول <code>SpecialtyGroups</code></h3>
+                <p>
+                    گروه‌های تخصصی زیرمجموعه هر معاونت (گروه حسابداری، تولید، بازرگانی، IT و ...). هر گروه به یک مدیر گروه (کاربر سیستم) متصل است.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه یکتای گروه</td></tr>
+                        <tr><td>DeputyId</td><td>uniqueidentifier (FK)</td><td>No</td><td>ارجاع به <code>Deputies.Id</code></td></tr>
+                        <tr><td>ErpGroupCode</td><td>nvarchar(50)</td><td>No</td><td>کد گروه در ERP</td></tr>
+                        <tr><td>Name</td><td>nvarchar(200)</td><td>No</td><td>نام گروه تخصصی</td></tr>
+                        <tr><td>ManagerUserId</td><td>uniqueidentifier (FK)</td><td>Yes</td><td>شناسه کاربر مدیر گروه در Identity</td></tr>
+                        <tr><td>IsActive</td><td>bit</td><td>No</td><td>فعال / غیرفعال</td></tr>
+                        <tr><td>CreatedAt</td><td>datetime2</td><td>No</td><td>تاریخ ثبت گروه</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- RewardPeriods -->
+            <div id="tbl-reward-periods" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۳. جدول <code>RewardPeriods</code></h3>
+                <p>
+                    دوره‌های ماهانه پاداش ویژه (مثلاً «شهریور ۱۴۰۴»). شامل بودجه کل تخصیص‌یافته و وضعیت قفل بودن دوره است.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه دوره</td></tr>
+                        <tr><td>DeputyId</td><td>uniqueidentifier (FK)</td><td>No</td><td>ارجاع به معاونت مربوطه</td></tr>
+                        <tr><td>Year</td><td>int</td><td>No</td><td>سال شمسی دوره</td></tr>
+                        <tr><td>Month</td><td>int</td><td>No</td><td>ماه شمسی دوره (۱..۱۲)</td></tr>
+                        <tr><td>Title</td><td>nvarchar(200)</td><td>No</td><td>عنوان نمایشی دوره (مثلاً «شهریور ۱۴۰۴»)</td></tr>
+                        <tr><td>BudgetAmount</td><td>decimal(18,2)</td><td>No</td><td>بودجه کل پاداش ویژه برای این دوره</td></tr>
+                        <tr><td>IsLocked</td><td>bit</td><td>No</td><td>در صورت قفل شدن، داده‌های دوره قابل ویرایش نیست</td></tr>
+                        <tr><td>CreatedAt</td><td>datetime2</td><td>No</td><td>تاریخ ایجاد دوره</td></tr>
+                        <tr><td>CreatedById</td><td>uniqueidentifier (FK)</td><td>Yes</td><td>کاربری که دوره را ثبت کرده است</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Indicators -->
+            <div id="tbl-indicators" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۴. جدول <code>Indicators</code></h3>
+                <p>
+                    شاخص‌های فنی که ضرایب فنی بر اساس آن‌ها محاسبه می‌شود (مثلاً مشارکت در ارتقای شاخص‌ها، پشتیبانی، توسعه، APEX).
+                    به هر شاخص یک «کاربر واردکننده» اختصاص داده می‌شود.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه شاخص</td></tr>
+                        <tr><td>DeputyId</td><td>uniqueidentifier (FK)</td><td>No</td><td>معاونت صاحب شاخص</td></tr>
+                        <tr><td>Code</td><td>nvarchar(50)</td><td>No</td><td>کد شاخص (PART, SUPP, DEV, APEX و ...)</td></tr>
+                        <tr><td>Name</td><td>nvarchar(300)</td><td>No</td><td>عنوان شاخص</td></tr>
+                        <tr><td>Description</td><td>nvarchar(max)</td><td>Yes</td><td>شرح تکمیلی شاخص</td></tr>
+                        <tr><td>Weight</td><td>decimal(5,2)</td><td>No</td><td>وزن شاخص در سبد ضرایب فنی (جمع وزن‌ها = ۱ یا ۱۰۰)</td></tr>
+                        <tr><td>MinValue</td><td>decimal(10,2)</td><td>No</td><td>حداقل مقدار مجاز برای امتیاز شاخص</td></tr>
+                        <tr><td>MaxValue</td><td>decimal(10,2)</td><td>No</td><td>حداکثر مقدار مجاز برای امتیاز شاخص</td></tr>
+                        <tr><td>DataEntryUserId</td><td>uniqueidentifier (FK)</td><td>No</td><td>کاربری که مجاز به ورود امتیاز این شاخص است</td></tr>
+                        <tr><td>IsActive</td><td>bit</td><td>No</td><td>فعال / غیرفعال</td></tr>
+                        <tr><td>SortOrder</td><td>int</td><td>Yes</td><td>ترتیب نمایش در لیست شاخص‌ها</td></tr>
+                        <tr><td>CreatedAt</td><td>datetime2</td><td>No</td><td>تاریخ ایجاد</td></tr>
+                        <tr><td>CreatedById</td><td>uniqueidentifier (FK)</td><td>Yes</td><td>کاربر ایجادکننده شاخص</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- IndicatorValues -->
+            <div id="tbl-indicator-values" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۵. جدول <code>IndicatorValues</code></h3>
+                <p>
+                    مقدار امتیاز هر شاخص برای هر گروه در هر دوره. این مقادیر توسط کاربران واردکننده شاخص‌ها ثبت می‌شود.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه رکورد</td></tr>
+                        <tr><td>PeriodId</td><td>uniqueidentifier (FK)</td><td>No</td><td>دوره پاداش</td></tr>
+                        <tr><td>GroupId</td><td>uniqueidentifier (FK)</td><td>No</td><td>گروه تخصصی</td></tr>
+                        <tr><td>IndicatorId</td><td>uniqueidentifier (FK)</td><td>No</td><td>شاخص</td></tr>
+                        <tr><td>Value</td><td>decimal(10,2)</td><td>No</td><td>امتیاز شاخص برای این گروه و این دوره</td></tr>
+                        <tr><td>EnteredById</td><td>uniqueidentifier (FK)</td><td>No</td><td>کاربر واردکننده امتیاز</td></tr>
+                        <tr><td>EnteredAt</td><td>datetime2</td><td>No</td><td>تاریخ ثبت مقدار</td></tr>
+                        <tr><td>ModifiedAt</td><td>datetime2</td><td>Yes</td><td>آخرین تاریخ ویرایش (در صورت وجود)</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ManagerialCoefficients -->
+            <div id="tbl-managerial-coeffs" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۶. جدول <code>ManagerialCoefficients</code></h3>
+                <p>
+                    ضرایب مدیریتی برای هر گروه در هر دوره (۱۵٪ اثر کل پاداش). این ضرایب توسط نقش «معاونت» وارد و در صورت نیاز اصلاح می‌شوند.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه رکورد</td></tr>
+                        <tr><td>PeriodId</td><td>uniqueidentifier (FK)</td><td>No</td><td>دوره پاداش</td></tr>
+                        <tr><td>GroupId</td><td>uniqueidentifier (FK)</td><td>No</td><td>گروه تخصصی</td></tr>
+                        <tr><td>Value</td><td>decimal(10,2)</td><td>No</td><td>ضریب مدیریتی (مثلاً ۱٫۰۵)</td></tr>
+                        <tr><td>EnteredById</td><td>uniqueidentifier (FK)</td><td>No</td><td>کاربر واردکننده ضریب (معمولاً معاونت)</td></tr>
+                        <tr><td>EnteredAt</td><td>datetime2</td><td>No</td><td>تاریخ ثبت</td></tr>
+                        <tr><td>ModifiedAt</td><td>datetime2</td><td>Yes</td><td>تاریخ آخرین اصلاح</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- PeriodGroupSnapshots -->
+            <div id="tbl-period-snapshots" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۷. جدول <code>PeriodGroupSnapshots</code></h3>
+                <p>
+                    اسنپ‌شات تعداد نفرات هر گروه در هر دوره. این اطلاعات از ERP خوانده شده و پس از صحه‌گذاری توسط راهبر/معاونت ثبت می‌شود.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه رکورد</td></tr>
+                        <tr><td>PeriodId</td><td>uniqueidentifier (FK)</td><td>No</td><td>دوره پاداش</td></tr>
+                        <tr><td>GroupId</td><td>uniqueidentifier (FK)</td><td>No</td><td>گروه تخصصی</td></tr>
+                        <tr><td>MemberCount</td><td>int</td><td>No</td><td>تعداد نفرات گروه در دوره</td></tr>
+                        <tr><td>VerifiedById</td><td>uniqueidentifier (FK)</td><td>Yes</td><td>کاربری که تعداد را تأیید کرده</td></tr>
+                        <tr><td>VerifiedAt</td><td>datetime2</td><td>Yes</td><td>تاریخ تأیید</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- GroupRewardResults -->
+            <div id="tbl-group-results" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۸. جدول <code>GroupRewardResults</code></h3>
+                <p>
+                    خروجی نهایی محاسبات پاداش ویژه برای هر گروه در هر دوره، شامل ضریب تعدیل، تعداد نفرات تعدیل‌شده، پاداش ویژه گروه و پاداش ماده ۴۷ مدیر گروه.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه رکورد</td></tr>
+                        <tr><td>PeriodId</td><td>uniqueidentifier (FK)</td><td>No</td><td>دوره پاداش</td></tr>
+                        <tr><td>GroupId</td><td>uniqueidentifier (FK)</td><td>No</td><td>گروه تخصصی</td></tr>
+                        <tr><td>TechnicalCoefficient</td><td>decimal(10,4)</td><td>No</td><td>ضریب فنی گروه (بر اساس شاخص‌ها، ۸۵٪)</td></tr>
+                        <tr><td>ManagerialCoefficient</td><td>decimal(10,4)</td><td>No</td><td>ضریب مدیریتی (۱۵٪)</td></tr>
+                        <tr><td>AdjustmentFactor</td><td>decimal(10,4)</td><td>No</td><td>ضریب تعدیل نهایی حاصل از ترکیب فنی و مدیریتی</td></tr>
+                        <tr><td>AdjustedMemberCount</td><td>decimal(10,2)</td><td>No</td><td>تعداد نفرات گروه با اعمال ضریب تعدیل</td></tr>
+                        <tr><td>GroupRewardAmount</td><td>decimal(18,2)</td><td>No</td><td>مبلغ پاداش ویژه تخصیص یافته به کل گروه</td></tr>
+                        <tr><td>Article47RewardAmount</td><td>decimal(18,2)</td><td>No</td><td>مبلغ پاداش ماده ۴۷ (پاداش ویژه مدیر گروه)</td></tr>
+                        <tr><td>CalculatedAt</td><td>datetime2</td><td>No</td><td>تاریخ انجام محاسبه</td></tr>
+                        <tr><td>CalculatedById</td><td>uniqueidentifier (FK)</td><td>Yes</td><td>کاربر محاسبه‌کننده (معمولاً معاونت)</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- AuditLogs -->
+            <div id="tbl-audit-logs" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۹. جدول <code>AuditLogs</code></h3>
+                <p>
+                    ثبت لاگ‌های مهم برای عملیات حسّاس (ورود ضرایب، محاسبات، قفل‌کردن دوره و ...). این جدول برای ردیابی و حسابرسی استفاده می‌شود.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه لاگ</td></tr>
+                        <tr><td>EventTime</td><td>datetime2</td><td>No</td><td>زمان وقوع رویداد</td></tr>
+                        <tr><td>UserId</td><td>uniqueidentifier (FK)</td><td>Yes</td><td>کاربر انجام‌دهنده عملیات (در صورت ورود)</td></tr>
+                        <tr><td>EventType</td><td>nvarchar(100)</td><td>No</td><td>نوع رویداد (Login, Seed, Calculation, LockPeriod و ...)</td></tr>
+                        <tr><td>EntityName</td><td>nvarchar(100)</td><td>Yes</td><td>نام موجودیت مربوط (RewardPeriod, IndicatorValue و ...)</td></tr>
+                        <tr><td>EntityId</td><td>uniqueidentifier</td><td>Yes</td><td>شناسه رکورد مربوط</td></tr>
+                        <tr><td>Details</td><td>nvarchar(max)</td><td>Yes</td><td>جزئیات بیشتر (به‌صورت JSON یا متن)</td></tr>
+                        <tr><td>IpAddress</td><td>nvarchar(50)</td><td>Yes</td><td>آی‌پی کاربر</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Identity tables -->
+            <div id="tbl-aspnet-users" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۱۰. جدول Identity: <code>AspNetUsers</code></h3>
+                <p>
+                    کاربران سیستم (شامل ادمین، معاونت، مدیران گروه‌ها و کاربران واردکننده شاخص‌ها). این جدول توسط Identity مدیریت می‌شود.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه کاربر</td></tr>
+                        <tr><td>UserName</td><td>nvarchar(256)</td><td>Yes</td><td>نام کاربری</td></tr>
+                        <tr><td>NormalizedUserName</td><td>nvarchar(256)</td><td>Yes</td><td>نام کاربری نرمال‌شده</td></tr>
+                        <tr><td>Email</td><td>nvarchar(256)</td><td>Yes</td><td>ایمیل</td></tr>
+                        <tr><td>NormalizedEmail</td><td>nvarchar(256)</td><td>Yes</td><td>ایمیل نرمال‌شده</td></tr>
+                        <tr><td>EmailConfirmed</td><td>bit</td><td>No</td><td>تأیید ایمیل</td></tr>
+                        <tr><td>PasswordHash</td><td>nvarchar(max)</td><td>Yes</td><td>هش رمز عبور</td></tr>
+                        <tr><td>SecurityStamp</td><td>nvarchar(max)</td><td>Yes</td><td>Security Stamp</td></tr>
+                        <tr><td>PhoneNumber</td><td>nvarchar(max)</td><td>Yes</td><td>شماره تلفن</td></tr>
+                        <tr><td>PhoneNumberConfirmed</td><td>bit</td><td>No</td><td>تأیید شماره تلفن</td></tr>
+                        <tr><td>TwoFactorEnabled</td><td>bit</td><td>No</td><td>۲FA فعال</td></tr>
+                        <tr><td>LockoutEnd</td><td>datetimeoffset</td><td>Yes</td><td>تاریخ پایان قفل</td></tr>
+                        <tr><td>LockoutEnabled</td><td>bit</td><td>No</td><td>قابلیت قفل شدن</td></tr>
+                        <tr><td>AccessFailedCount</td><td>int</td><td>No</td><td>تعداد تلاش ناموفق</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <div id="tbl-aspnet-roles" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۱۱. جدول Identity: <code>AspNetRoles</code></h3>
+                <p>
+                    نقش‌های سیستم (SystemAdmin, Deputy, IndicatorDataEntry, GroupManager).
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Id</td><td>uniqueidentifier (PK)</td><td>No</td><td>شناسه نقش</td></tr>
+                        <tr><td>Name</td><td>nvarchar(256)</td><td>Yes</td><td>نام نقش</td></tr>
+                        <tr><td>NormalizedName</td><td>nvarchar(256)</td><td>Yes</td><td>نام نرمال‌شده (برای یکتا بودن)</td></tr>
+                        <tr><td>ConcurrencyStamp</td><td>nvarchar(max)</td><td>Yes</td><td>Concurrency Stamp</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <div id="tbl-aspnet-userroles" class="anchor-block"></div>
+            <section class="card">
+                <h3>۲-۱۲. جدول Identity: <code>AspNetUserRoles</code></h3>
+                <p>
+                    جدول ارتباطی بین کاربران و نقش‌ها.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Null</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>UserId</td><td>uniqueidentifier (PK, FK)</td><td>No</td><td>شناسه کاربر</td></tr>
+                        <tr><td>RoleId</td><td>uniqueidentifier (PK, FK)</td><td>No</td><td>شناسه نقش</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ====================== APIs ====================== -->
+            <div id="apis" class="anchor-block"></div>
+            <section class="card">
+                <h2>۳. وب‌سرویس‌ها (API) <span class="badge badge-api">HTTP REST</span></h2>
+                <p>
+                    تمام سرویس‌ها تحت پروژه <code>Irisa.SpecialBonus.Api</code> قرار دارند. احراز هویت از نوع
+                    <code>JWT Bearer</code> است و برای دسترسی به سرویس‌های مدیریتی از نقش‌های
+                    <span class="role-pill">SystemAdmin</span> و <span class="role-pill">Deputy</span> استفاده می‌شود.
+                </p>
+            </section>
+
+            <!-- AuthController -->
+            <div id="api-auth-login" class="anchor-block"></div>
+            <section class="card">
+                <h3>۳-۱. AuthController</h3>
+                <p>
+                    کنترلر احراز هویت برای دریافت توکن JWT.
+                    <br />
+                    <code>Route: /api/Auth</code>
+                </p>
+
+                <h4>۳-۱-۱. ورود کاربر و دریافت JWT</h4>
+                <p>
+                    <span class="method method-post">POST</span>
+                    <code>/api/Auth/login</code>
+                </p>
+                <p>
+                    احراز هویت بر اساس نام کاربری یا ایمیل و رمز عبور. در صورت موفقیت، توکن JWT به همراه اطلاعات پایه کاربر برگردانده می‌شود.
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>بخش</th>
+                            <th>ساختار</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Request body (JSON)</td>
+                            <td>
+                                <pre>{
+  "userNameOrEmail": "admin",
+  "password": "Test@12345"
+}</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Response 200 (نمونه)</td>
+                            <td>
+                                <pre>{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6...",
+  "expiresAt": "2025-11-21T10:20:30Z",
+  "user": {
+    "id": "...",
+    "userName": "admin",
+    "roles": [ "SystemAdmin" ]
+  }
+}</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Response 401</td>
+                            <td>نام کاربری/ایمیل یا کلمه عبور نادرست است.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- DeputiesController -->
+            <div id="api-deputies" class="anchor-block"></div>
+            <section class="card">
+                <h3>۳-۲. DeputiesController</h3>
+                <p>
+                    مدیریت معاونت‌ها (فقط برای نقش‌های
+                    <span class="role-pill">SystemAdmin</span> و <span class="role-pill">Deputy</span>).
+                    <br />
+                    <code>Route base: /api/admin/Deputies</code>
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>متد</th>
+                            <th>آدرس</th>
+                            <th>نقش‌های مجاز</th>
+                            <th>توضیح</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/api/admin/Deputies</code></td>
+                            <td>SystemAdmin, Deputy</td>
+                            <td>دریافت لیست تمام معاونت‌ها</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/api/admin/Deputies/active</code></td>
+                            <td>SystemAdmin, Deputy</td>
+                            <td>دریافت لیست معاونت‌های فعال</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/api/admin/Deputies/{id}</code></td>
+                            <td>SystemAdmin, Deputy</td>
+                            <td>دریافت اطلاعات یک معاونت بر اساس <code>Id</code></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/api/admin/Deputies/by-code/{code}</code></td>
+                            <td>SystemAdmin, Deputy</td>
+                            <td>دریافت معاونت بر اساس <code>Code</code> (مثلاً ISD)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/api/admin/Deputies</code></td>
+                            <td>SystemAdmin, Deputy</td>
+                            <td>ایجاد معاونت جدید</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-put">PUT</span></td>
+                            <td><code>/api/admin/Deputies/{id}</code></td>
+                            <td>SystemAdmin, Deputy</td>
+                            <td>ویرایش اطلاعات معاونت</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-delete">DELETE</span></td>
+                            <td><code>/api/admin/Deputies/{id}</code></td>
+                            <td>SystemAdmin</td>
+                            <td>حذف معاونت (در عمل بهتر است نرم‌حذف یا محدود شود)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>نمونه بدنه درخواست برای ایجاد معاونت</h4>
+                <pre>{
+  "code": "ISD",
+  "name": "معاونت سیستم‌های اطلاعاتی",
+  "isActive": true
+}</pre>
+            </section>
+
+            <!-- RewardPeriodsController -->
+            <div id="api-reward-periods" class="anchor-block"></div>
+            <section class="card">
+                <h3>۳-۳. RewardPeriodsController</h3>
+                <p>
+                    مدیریت دوره‌های پاداش (ماه و سال، بودجه، قفل کردن دوره).
+                    <br />
+                    <code>Route base: /api/admin/RewardPeriods</code><br />
+                    نقش‌های مجاز: <span class="role-pill">SystemAdmin</span>, <span class="role-pill">Deputy</span>
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>متد</th>
+                            <th>آدرس</th>
+                            <th>شرح کوتاه</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/api/admin/RewardPeriods</code></td>
+                            <td>دریافت لیست تمام دوره‌ها (مرتب بر اساس سال/ماه نزولی)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-get">GET</span></td>
+                            <td><code>/api/admin/RewardPeriods/{id}</code></td>
+                            <td>دریافت جزئیات یک دوره</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-post">POST</span></td>
+                            <td><code>/api/admin/RewardPeriods</code></td>
+                            <td>ایجاد دوره جدید – مقدار <code>CreatedById</code> از JWT تنظیم می‌شود</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-put">PUT</span></td>
+                            <td><code>/api/admin/RewardPeriods/{id}</code></td>
+                            <td>ویرایش دوره موجود</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-delete">DELETE</span></td>
+                            <td><code>/api/admin/RewardPeriods/{id}</code></td>
+                            <td>حذف دوره</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method method-put">PUT</span></td>
+                            <td><code>/api/admin/RewardPeriods/{id}/lock</code></td>
+                            <td>قفل کردن دوره (جلوگیری از ویرایش ضرایب و مقادیر)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>نمونه بدنه درخواست برای ایجاد دوره</h4>
+                <pre>{
+  "deputyId": "GUID-of-deputy",
+  "year": 1404,
+  "month": 6,
+  "title": "شهریور 1404",
+  "budgetAmount": 1000000000,
+  "isLocked": false
+}</pre>
+            </section>
+
+            <!-- یادداشت پایانی -->
+            <section class="card">
+                <h3>۴. نکات تکمیلی</h3>
+                <ul style="font-size:13px; line-height:1.8;">
+                    <li>تمام سرویس‌های دامنه (به جز Identity) از طریق Dapper و کلاس‌های سرویسی مانند <code>RewardPeriodService</code> و <code>DeputyService</code> پیاده‌سازی شده‌اند.</li>
+                    <li>برای تست APIها توصیه می‌شود ابتدا با نقش <code>admin / Test@12345</code> از طریق <code>/api/Auth/login</code> توکن دریافت کرده و سپس همان توکن را در Swagger یا Postman در هدر <code>Authorization: Bearer &lt;token&gt;</code> استفاده کنید.</li>
+                    <li>این فایل به صورت کاملاً مستقل (HTML + CSS داخلی) طراحی شده و می‌توان آن را مستقیماً در ریشه پروژه یا پوشه <code>docs</code> قرار داد.</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

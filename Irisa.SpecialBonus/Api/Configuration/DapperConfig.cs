@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Irisa.SpecialBonus.Application.Services;
 using Irisa.SpecialBonus.Domain.Interfaces.Services;
 using Irisa.SpecialBonus.Persistence.Dapper.Services;
+using Irisa.SpecialBonus.Persistence.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Irisa.SpecialBonus.Api.Configuration
 {
@@ -16,6 +18,11 @@ namespace Irisa.SpecialBonus.Api.Configuration
             services.AddScoped<IManagerialCoefficientService, ManagerialCoefficientService>();
             services.AddScoped<IGroupRewardResultService, GroupRewardResultService>();
             services.AddScoped<IPeriodGroupSnapshotService, PeriodGroupSnapshotService>();
+            services.AddScoped<IRewardCalculationService, RewardCalculationService>();
+            services.AddScoped<IDeputyService, DeputyService>();
+            services.AddScoped<ISpecialtyGroupService, SpecialtyGroupService>();
+            services.AddScoped<IUserService, UserService>();
+
 
             return services;
         }

@@ -1,50 +1,133 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>داشبورد | سامانه پاداش ویژه</title>
+    <meta charset="utf-8" />
+    <title>داشبورد - سامانه پاداش ویژه</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap 5 از CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css"
+          rel="stylesheet"
+          integrity="sha384-WZ4c7YV+8DW3v9omD8r3N0tG/IekodP4e2f7v8mXj3rT1iZy5rHEG7z2kZWuD1c"
+          crossorigin="anonymous">
+
+    <!-- استایل اختصاصی -->
     <link href="../css/styles.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- نوار بالا -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand">سامانه پاداش ویژه معاونت سیستم‌های اطلاعاتی</span>
 
+            <div class="d-flex align-items-center text-white">
+                <span class="me-2">
+                    کاربر:
+                    <strong id="current-user-name">...</strong>
+                </span>
+                <button id="btn-logout" class="btn btn-sm btn-outline-light ms-3">
+                    خروج
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- محتوای اصلی -->
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col">
+                <h3 class="mb-3">داشبورد</h3>
+                <p class="text-muted">
+                    از منوی زیر می‌توانید به بخش‌های مختلف سامانه پاداش ویژه دسترسی داشته باشید.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-3">
+                <a href="reward-periods.html" class="card text-decoration-none h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">دوره‌های پاداش</h5>
+                        <p class="card-text small text-muted">
+                            تعریف و مدیریت دوره‌های ماهانه پاداش ویژه.
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="indicators.html" class="card text-decoration-none h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">شاخص‌ها</h5>
+                        <p class="card-text small text-muted">
+                            تعریف شاخص‌های فنی، وزن‌ها و تعیین نفرات واردکننده ضرایب.
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="indicator-values.html" class="card text-decoration-none h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">ورود ضرایب شاخص‌ها</h5>
+                        <p class="card-text small text-muted">
+                            ورود مقادیر شاخص‌ها به تفکیک گروه و دوره.
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="reward-calculation.html" class="card text-decoration-none h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">محاسبه پاداش ویژه</h5>
+                        <p class="card-text small text-muted">
+                            مشاهده و محاسبه پاداش ویژه هر گروه و پاداش ماده ۴۷.
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery از CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+
+    <!-- اسکریپت‌های عمومی -->
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
-    <script src="../js/ui.js"></script>
-</head>
 
-<body>
+    <script>
+        // وقتی صفحه لود شد
+        $(function () {
+            // 1) اگر توکن نداشتیم، برگرد به صفحه لاگین
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
 
-<nav class="navbar navbar-dark bg-primary px-3">
-    <span class="navbar-brand mb-0 h1">سامانه پاداش ویژه</span>
-    <div class="d-flex align-items-center">
-        <span class="text-white me-3">کاربر: <span id="user"></span></span>
-        <button class="btn btn-sm btn-outline-light" onclick="logout()">خروج</button>
-    </div>
-</nav>
+            // 2) خواندن نام کاربر از localStorage
+            //    (کلیدها باید با auth.js هم‌خوان باشند)
+            let userName =
+                localStorage.getItem('userName') ||
+                localStorage.getItem('userNameOrEmail') ||
+                localStorage.getItem('user') ||
+                'نامشخص';
 
-<div class="container mt-4">
+            $('#current-user-name').text(userName);
 
-    <h5 class="mb-3">منوی اصلی</h5>
-
-    <ul class="list-group">
-        <li class="list-group-item"><a href="reward-periods.html">مدیریت دوره‌های پاداش</a></li>
-        <li class="list-group-item"><a href="indicators.html">مدیریت شاخص‌ها</a></li>
-        <li class="list-group-item"><a href="indicator-values.html">ورود / مشاهده مقادیر شاخص‌ها</a></li>
-        <li class="list-group-item"><a href="reward-calculation.html">محاسبه و مشاهده پاداش ویژه</a></li>
-        <li class="list-group-item"><a href="groups.html">گروه‌های تخصصی</a></li>
-    </ul>
-
-</div>
-
-<script>
-    $(function () {
-        if (!requireAuth()) return;
-        fillUserInfo();
-    });
-</script>
-
+            // 3) دکمه خروج
+            $('#btn-logout').on('click', function () {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userNameOrEmail');
+                localStorage.removeItem('roles');
+                window.location.href = "login.html";
+            });
+        });
+    </script>
 </body>
 </html>

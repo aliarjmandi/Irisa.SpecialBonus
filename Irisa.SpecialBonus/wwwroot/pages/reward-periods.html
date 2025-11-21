@@ -1,65 +1,172 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>دوره‌های پاداش | سامانه پاداش ویژه</title>
+    <!-- Bootstrap 5 از CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../css/styles.css" rel="stylesheet" />
+<link href="../css/styles.css" rel="stylesheet" />
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery از CDN -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Bootstrap JS از CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="../js/api.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/ui.js"></script>
-</head>
-<body>
 
-<nav class="navbar navbar-dark bg-primary px-3">
-    <span class="navbar-brand mb-0 h1">دوره‌های پاداش</span>
-    <button class="btn btn-sm btn-outline-light" onclick="window.location.href='dashboard.html'">بازگشت به داشبورد</button>
-</nav>
-
-<div class="container mt-4">
-
-    <h5>لیست دوره‌ها</h5>
-
-    <table class="table table-bordered table-sm mt-3" id="tblPeriods">
-        <thead>
-        <tr>
-            <th>عنوان</th>
-            <th>سال</th>
-            <th>ماه</th>
-            <th>بودجه (ریال)</th>
-            <th>قفل شده؟</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-</div>
+<!-- اسکریپت‌های عمومی پروژه -->
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
 
 <script>
-    $(function () {
-        if (!requireAuth()) return;
+    // هدر مشترک برای همه درخواست‌ها (Authorization)
+    function getAuthHeaders() {
+        const token = localStorage.getItem('token');
+        if (!token) return {};
+        return { 'Authorization': 'Bearer ' + token };
+    }
 
-        apiRequest("GET", "/admin/RewardPeriods", null, function (res) {
-            let rows = "";
-            res.forEach(p => {
-                rows += `
-                <tr>
-                    <td>${p.title}</td>
-                    <td>${p.year}</td>
-                    <td>${p.month}</td>
-                    <td>${p.budgetAmount}</td>
-                    <td>${p.isLocked ? "بله" : "خیر"}</td>
-                </tr>`;
+    $(function () {
+
+        // اگر توکن نداریم، برگرد به صفحه لاگین
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        // دکمه بازگشت
+        $('#btn-back-dashboard').on('click', function () {
+            window.location.href = "dashboard.html";
+        });
+
+        // بارگذاری اولیه
+        loadDeputies();
+        loadPeriods();
+
+        // ارسال فرم ایجاد دوره
+        $('#form-create-period').on('submit', function (e) {
+            e.preventDefault();
+            $('#form-message').text('');
+
+            const deputyId = $('#deputyId').val();
+            const year = parseInt($('#year').val(), 10);
+            const month = parseInt($('#month').val(), 10);
+            const title = $('#title').val().trim();
+            const budgetAmount = parseFloat($('#budgetAmount').val());
+
+            if (!deputyId || !year || !month || !title || isNaN(budgetAmount)) {
+                $('#form-message').text('لطفاً همه فیلدها را به‌درستی تکمیل کنید.');
+                return;
+            }
+
+            const payload = {
+                deputyId: deputyId,
+                year: year,
+                month: month,
+                title: title,
+                budgetAmount: budgetAmount,
+                isLocked: false
+            };
+
+            $.ajax({
+                url: '/api/admin/RewardPeriods',
+                method: 'POST',
+                headers: getAuthHeaders(),
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function () {
+                    $('#form-create-period')[0].reset();
+                    $('#form-message')
+                        .removeClass('text-danger')
+                        .addClass('text-success')
+                        .text('دوره با موفقیت ثبت شد.');
+                    loadPeriods();
+                },
+                error: function (xhr) {
+                    let msg = 'خطا در ثبت دوره.';
+                    if (xhr && xhr.responseText) {
+                        msg = xhr.responseText;
+                    }
+                    $('#form-message')
+                        .removeClass('text-success')
+                        .addClass('text-danger')
+                        .text(msg);
+                    console.error('Create period error', xhr.status, xhr.responseText);
+                }
             });
-            $("#tblPeriods tbody").html(rows);
         });
     });
-</script>
 
-</body>
-</html>
+    // خواندن لیست معاونت‌ها برای کمبوباکس
+    function loadDeputies() {
+        $.ajax({
+            url: '/api/admin/Deputies',
+            method: 'GET',
+            headers: getAuthHeaders(),
+            success: function (data) {
+                const $sel = $('#deputyId');
+                $sel.empty();
+
+                if (!data || data.length === 0) {
+                    $sel.append('<option value="">هیچ معاونتی یافت نشد</option>');
+                    return;
+                }
+
+                data.forEach(function (d) {
+                    $sel.append(
+                        $('<option>')
+                            .val(d.id)
+                            .text(d.name)
+                    );
+                });
+            },
+            error: function (xhr) {
+                const $sel = $('#deputyId');
+                $sel.empty();
+                $sel.append('<option value="">خطا در بارگذاری معاونت‌ها</option>');
+                console.error('Load deputies error', xhr.status, xhr.responseText);
+            }
+        });
+    }
+
+    // خواندن لیست دوره‌ها برای جدول
+    function loadPeriods() {
+        $.ajax({
+            url: '/api/admin/RewardPeriods',
+            method: 'GET',
+            headers: getAuthHeaders(),
+            success: function (data) {
+                const $tbody = $('#tbl-periods tbody');
+                $tbody.empty();
+
+                if (!data || data.length === 0) {
+                    $tbody.append(
+                        '<tr><td colspan="5" class="text-center text-muted">هنوز هیچ دوره‌ای ثبت نشده است.</td></tr>'
+                    );
+                    return;
+                }
+
+                data.forEach(function (p) {
+                    const lockedText = p.isLocked ? 'بله' : 'خیر';
+                    const budgetText = p.budgetAmount != null
+                        ? p.budgetAmount.toLocaleString('fa-IR')
+                        : '';
+
+                    const row = `
+                            <tr class="text-center">
+                                <td>${p.title || ''}</td>
+                                <td>${p.year}</td>
+                                <td>${p.month}</td>
+                                <td>${budgetText}</td>
+                                <td>${lockedText}</td>
+                            </tr>`;
+                    $tbody.append(row);
+                });
+            },
+            error: function (xhr) {
+                const $tbody = $('#tbl-periods tbody');
+                $tbody.empty();
+                $tbody.append(
+                    '<tr><td colspan="5" class="text-center text-danger">خطا در بارگذاری دوره‌ها.</td></tr>'
+                );
+                console.error('Load periods error', xhr.status, xhr.responseText);
+            }
+        });
+    }
+</script>

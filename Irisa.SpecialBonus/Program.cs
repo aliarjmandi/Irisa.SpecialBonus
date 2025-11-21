@@ -5,6 +5,7 @@ using Irisa.SpecialBonus.Persistence.Dapper.Services;
 using Irisa.SpecialBonus.Persistence.Identity;
 using Irisa.SpecialBonus.Persistence.Seed;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
@@ -14,9 +15,8 @@ builder.Services.AddControllers();
 builder.Services.AddApplicationIdentity(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddDapperServices();
-
-builder.Services.AddScoped<IRewardCalculationService, RewardCalculationService>();
 builder.Services.AddTransient<DatabaseSeeder>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Swagger با JWT
 builder.Services.AddSwaggerWithJwt();
