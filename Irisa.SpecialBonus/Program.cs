@@ -21,17 +21,16 @@ builder.Services.AddScoped<IUserService, UserService>();
 // Swagger با JWT
 builder.Services.AddSwaggerWithJwt();
 
-// ------------------ CORS ------------------
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("DevCors", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
 });
-// -------------------------------------------
 
 var app = builder.Build();
 
@@ -48,14 +47,23 @@ using (var scope = app.Services.CreateScope())
 
 
 app.UseSwagger();
+/*
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Irisa Special Bonus API v1");
 });
+*/
+
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/RewardAPI/swagger/v1/swagger.json", "Irisa Special Bonus API v1");
+});
+
+
 
 app.UseHttpsRedirection();
 
-app.UseCors("DevCors");
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
