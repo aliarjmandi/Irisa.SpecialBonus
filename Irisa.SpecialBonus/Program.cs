@@ -37,7 +37,7 @@ var app = builder.Build();
 // اجرای Seeder
 //await IdentitySeeder.SeedAsync(app.Services);
 
-
+//https://localhost:7276/swagger/index.html
 // اجرای سیدر
 using (var scope = app.Services.CreateScope())
 {
@@ -47,18 +47,19 @@ using (var scope = app.Services.CreateScope())
 
 
 app.UseSwagger();
-/*
+
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Irisa Special Bonus API v1");
 });
-*/
 
+
+/*
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/RewardAPI/swagger/v1/swagger.json", "Irisa Special Bonus API v1");
 });
-
+*/
 
 
 app.UseHttpsRedirection();
